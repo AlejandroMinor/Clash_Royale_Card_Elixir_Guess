@@ -1,11 +1,12 @@
 import requests
 import random
 
+YOUR_API_KEY = ''
 class ElixirTrivia:
     def __init__(self):
         self.url = 'https://api.clashroyale.com/v1/cards'
         self.headers = {
-            'Authorization': 'Bearer APIKEY'
+            'Authorization': 'Bearer '+ YOUR_API_KEY
         }
         self.cards = self.get_cards()
 
@@ -25,11 +26,12 @@ class ElixirTrivia:
         card = self.get_random_card()
         card_name = card['name']
         card_elixir_cost = card['elixirCost']
-        return card_name, card_elixir_cost
+        card_img_url = card['iconUrls']['medium']
+        return card_name, card_elixir_cost, card_img_url
 
 
     def launch_trivia(self):
-        card_name, card_elixir_cost = self.get_card_elixir_trivia()
+        card_name, card_elixir_cost, _ = self.get_card_elixir_trivia()
         print(f'Card Name: {card_name}')
         while True:
             user_input = input('Guess the elixir cost: ')

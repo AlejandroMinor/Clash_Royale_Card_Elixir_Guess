@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+{% extends 'base.html' %}
+<head>
+    {% block title %}
+    <title>Respuesta</title>
+    {% endblock %}
+
+</head>
+
+<body>
+    {% block content %}
+    <div class="alert {{ alert_class }}" role="alert">
+        {{ alert_message }}
+    </div>
+    <script>
+        setTimeout(function() {
+            window.location.href = "/";
+        }, 1000);
+    </script>
+    {% endblock %}
+</body>
+
+</html>

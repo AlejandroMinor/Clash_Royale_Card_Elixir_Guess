@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+{% extends 'base.html' %}
+<head>
+    {% block title %}
+    <title>Detalles de la carta</title>
+    {% endblock %}
+</head>
+
+<body>
+    {% block content %}
+    <h1>Detalles de la carta</h1>
+
+    <div class="p-3 mb-2 bg-secondary text-white">
+        <h2>Nombre: {{ card_name }}</h2>
+        <h2>Costo Elixir: {{ card_cost }}</h2>
+        <img src="{{ card_img_url }}" alt="{{ card_name }}" class="img-rounded">
+        <form action="/respuesta" method="post">
+            <input type="text" name="respuesta" required placeholder="Costo de Elixir">
+            <input type="hidden" name="card_cost" value="{{ card_cost }}">
+            <input type="submit" class="btn btn-primary" value="Enviar">
+        </form>
+    </div>
+    {% endblock %}
+</body>
+
+</html>
