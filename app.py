@@ -14,11 +14,8 @@ def index():
 def respuesta():
     respuesta = str(request.form['respuesta'])
     card_cost = str(request.form['card_cost'])
-    print(respuesta)
-    print(type(respuesta))
-    print(card_cost)
-    print(type(card_cost))
-    if respuesta == str(card_cost):
+
+    if respuesta == card_cost:
         alert_message = 'Respuesta correcta'
         alert_class = 'alert-success'
     else:
