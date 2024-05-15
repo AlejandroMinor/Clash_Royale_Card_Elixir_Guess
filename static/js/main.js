@@ -26,7 +26,7 @@ function answer(card_name) {
     }
 }
 
-function loadCorrectCards() {
+function loadCorrectCards(number_of_cards) {
     const correctCardsList = document.getElementById('correct_cards_list');
     const correctCards = JSON.parse(sessionStorage.getItem('correctCards')) || [];
     correctCardsList.innerHTML = '';
@@ -40,6 +40,7 @@ function loadCorrectCards() {
 
     if (correctCards.length > 0) {
         title.style.display = 'block';
+        title.textContent = 'Cartas Adivinadas: ' + correctCards.length + '/' + number_of_cards;
     } else {
         title.style.display = 'none';
     }
@@ -71,5 +72,11 @@ function validateGame(number_of_cards, card_name) {
 
 function resetGame() {
     sessionStorage.setItem('correctCards', JSON.stringify([]));
-    loadCorrectCards();
+    loadCorrectCards(sessionStorage.setItem('number_of_cards', '{{ number_of_cards }}'));
+}
+
+function confirmReset() {
+    if (confirm("¿Estás seguro de que quieres reiniciar el juego?")) {
+        resetGame();
+    }
 }

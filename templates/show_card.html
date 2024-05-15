@@ -70,9 +70,9 @@
             </div>
             <ul id="correct_cards_list"></ul>
         </div>
-        <button onclick="resetGame()" class="btn btn-danger mt-2">Reiniciar Juego</button>
+        <button onclick="confirmReset()" class="btn btn-danger mt-2">Reiniciar Juego</button>
     </div>
-    <script src="{{ url_for('static', filename='js/main.js') }}" onload="validateGame('{{ number_of_cards }}', '{{ card_name }}'); loadCorrectCards();"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}" onload="sessionStorage.setItem('number_of_cards', '{{ number_of_cards }}'); validateGame('{{ number_of_cards }}', '{{ card_name }}'); loadCorrectCards('{{ number_of_cards }}');"></script>
     {% endblock %}
 </body>
 
