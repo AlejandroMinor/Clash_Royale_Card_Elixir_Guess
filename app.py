@@ -7,8 +7,9 @@ trivia = elixir_trivia.ElixirTrivia()
 
 @app.route('/')
 def index():
+    number_of_cards = len(trivia.cards['items'])
     card_name, card_cost, card_img_url = trivia.get_card_elixir_trivia()
-    return render_template('show_card.html', card_name=card_name, card_cost=card_cost, card_img_url=card_img_url)
+    return render_template('show_card.html', card_name=card_name, card_cost=card_cost, card_img_url=card_img_url, number_of_cards=number_of_cards)
 
 @app.route('/respuesta', methods=['POST'])
 def respuesta():

@@ -47,9 +47,9 @@
 <body>
     {% block content %}
     <div class="container">
-        <h1>Adivina el costo de elixir</h1>
         <div class="card bg-secondary text-white">
             <div class="card-body text-center">
+                <h1>Adivina el costo de elixir</h1>
                 <img src="{{ card_img_url }}" alt="{{ card_name }}" class="img-fluid" width="200rem" id="image">
                 <h2>{{ card_name }}</h2>
                 <form action="/respuesta" method="post">
@@ -60,42 +60,19 @@
                     <input type="hidden" name="card_cost" value="{{ card_cost }}">
                     <!-- <button type="submit" class="btn btn-primary">Enviar</button> -->
                 </form>
-                <button onclick="answer()" class="btn btn-primary">Enviar</button>
+                <button onclick="answer('{{ card_name }}')" class="btn btn-primary">Enviar</button>
                 <div class="alert alert-success mt-2 hidden_element" role="alert" id="success_alert">
                     ¡Correcto! 
                 </div>
                 <div class="alert alert-danger mt-2 hidden_element" role="alert" id="error_alert">
                     ¡Incorrecto! Inténtalo de nuevo
-                  </div>
-                
+                </div>
             </div>
+            <ul id="correct_cards_list"></ul>
         </div>
+        <button onclick="resetGame()" class="btn btn-danger mt-2">Reiniciar Juego</button>
     </div>
-    <script>
-        function answer() {
-            const card_cost = document.querySelector('input[name="card_cost"]').value;
-            const respuesta = document.querySelector('input[name="respuesta"]').value;
-            const alert_answer = document.getElementById('success_alert');
-            const alert_error = document.getElementById('error_alert');
-
-            if (card_cost == respuesta) {
-                alert_answer.classList.remove('hidden_element');
-                setTimeout(function () {
-                    window.location.href = "/";
-                }, 2000);
-            } else {
-                const image = document.getElementById('image');
-                image.classList.add('shake_image');
-                alert_error.classList.remove('hidden_element');
-
-                setTimeout(() => {
-                    image.classList.remove('shake_image');
-                    alert_error.classList.add('hidden_element');
-                    document.querySelector('input[name="respuesta"]').value = '';
-                }, 1000);
-            }
-        }
-    </script>
+    <script src="{{ url_for('static', filename='js/main.js') }}" onload="validateGame('{{ number_of_cards }}', '{{ card_name }}'); loadCorrectCards();"></script>
     {% endblock %}
 </body>
 
