@@ -15,11 +15,15 @@ function answer(card_name) {
         }, 2000);
     } else {
         const image = document.getElementById('image');
-        image.classList.add('shake_image');
+        if (image) {
+            image.classList.add('shake_image');
+        }
         alert_error.classList.remove('hidden_element');
 
         setTimeout(() => {
-            image.classList.remove('shake_image');
+            if (image) {
+                image.classList.remove('shake_image');
+            }
             alert_error.classList.add('hidden_element');
             document.querySelector('input[name="respuesta"]').value = '';
         }, 1000);
@@ -60,7 +64,8 @@ function verifyUniqueCard(cardName) {
 }
 
 function validateGame(number_of_cards, card_name) {
-    const number_of_correct_cards = JSON.parse(sessionStorage.getItem('correctCards')).length || 0;
+    const correctCards = JSON.parse(sessionStorage.getItem('correctCards')) || [];
+    const number_of_correct_cards = correctCards.length;
     if (number_of_correct_cards == parseInt(number_of_cards)) {
         alert("¡Felicidades! Has adivinado todas las cartas. Vuelve a intentarlo.");
         resetGame();

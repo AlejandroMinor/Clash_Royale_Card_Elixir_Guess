@@ -50,7 +50,9 @@
         <div class="card bg-secondary text-white">
             <div class="card-body text-center">
                 <h1>Adivina el costo de elixir</h1>
+                {% if card_img_url %}
                 <img src="{{ card_img_url }}" alt="{{ card_name }}" class="img-fluid" width="200rem" id="image">
+                {% endif %}
                 <h2>{{ card_name }}</h2>
                 <form action="/respuesta" method="post">
                     <div class="form-group">

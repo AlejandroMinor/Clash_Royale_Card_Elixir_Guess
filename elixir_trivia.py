@@ -1,23 +1,38 @@
-import requests
+import json
 import random
+from pathlib import Path
 
-YOUR_API_KEY = ''
+
 class ElixirTrivia:
     def __init__(self):
-        self.url = 'https://api.clashroyale.com/v1/cards'
-        self.headers = {
-            'Authorization': 'Bearer '+ YOUR_API_KEY
-        }
+        self.local_cards_path = Path(__file__).resolve().parent / 'data' / 'cards.json'
         self.cards = self.get_cards()
 
-    def get_cards(self):
-        response = requests.get(self.url, headers=self.headers)
-        if response.status_code == 200:
-            cards = response.json()
-            return cards
-        else:
+    def _normalize_cards_payload(self, payload):
+        if not isinstance(payload, dict) or 'items' not in payload:
             return None
-    
+
+        items = [card for card in payload.get('items', []) if card.get('elixirCost') is not None]
+        return {'items': items}
+
+    def _read_local_cards(self):
+        if not self.local_cards_path.exists():
+            return None
+
+        with self.local_cards_path.open('r', encoding='utf-8') as file:
+            payload = json.load(file)
+
+        return self._normalize_cards_payload(payload)
+
+    def get_cards(self):
+        local_cards = self._read_local_cards()
+        if local_cards and local_cards.get('items'):
+            return local_cards
+
+        raise RuntimeError(
+            'No se pudieron cargar cartas desde data/cards.json. Ejecuta update_cards_from_official.py para actualizar el dataset.'
+        )
+
     def get_random_card(self):
         card = random.choice(self.cards['items'])
         return card
@@ -26,7 +41,7 @@ class ElixirTrivia:
         card = self.get_random_card()
         card_name = card['name']
         card_elixir_cost = card['elixirCost']
-        card_img_url = card['iconUrls']['medium']
+        card_img_url = card.get('iconUrls', {}).get('medium', '')
         return card_name, card_elixir_cost, card_img_url
 
 
