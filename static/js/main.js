@@ -1,11 +1,57 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     const inputField = document.getElementById('respuesta_input');
+    const stepDownBtn = document.getElementById('step_down');
+    const stepUpBtn = document.getElementById('step_up');
+
+    const clampAnswerValue = (nextValue) => {
+        const min = Number.parseInt(inputField?.min ?? '0', 10);
+        const max = Number.parseInt(inputField?.max ?? '10', 10);
+        const normalized = Number.isFinite(nextValue) ? nextValue : 0;
+        return Math.max(min, Math.min(max, normalized));
+    };
+
+    const setAnswerValue = (nextValue) => {
+        if (!inputField) {
+            return;
+        }
+
+        inputField.value = String(clampAnswerValue(nextValue));
+    };
+
+    const bumpAnswerValue = (delta) => {
+        const current = Number.parseInt(inputField?.value || '0', 10);
+        setAnswerValue((Number.isFinite(current) ? current : 0) + delta);
+    };
+
     if (inputField) {
+        setAnswerValue(Number.parseInt(inputField.value || '0', 10));
         inputField.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 answer();
             }
+        });
+
+        inputField.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                bumpAnswerValue(1);
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                bumpAnswerValue(-1);
+            }
+        });
+    }
+
+    if (stepDownBtn) {
+        stepDownBtn.addEventListener('click', function() {
+            bumpAnswerValue(-1);
+        });
+    }
+
+    if (stepUpBtn) {
+        stepUpBtn.addEventListener('click', function() {
+            bumpAnswerValue(1);
         });
     }
     
@@ -226,7 +272,7 @@ function answer() {
                 image.classList.remove('shake_image');
             }, 220);
         }
-        document.querySelector('input[name="respuesta"]').value = '';
+        document.querySelector('input[name="respuesta"]').value = '0';
         document.querySelector('input[name="respuesta"]').focus();
     }
 }
@@ -386,7 +432,7 @@ async function loadNextCard() {
             cardRarityEl.value = data.card_rarity || '';
         }
         if (inputEl) {
-            inputEl.value = '';
+            inputEl.value = '0';
             inputEl.focus();
         }
         if (!imageEl && imageContainerEl && nextImageUrl) {

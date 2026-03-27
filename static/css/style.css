@@ -236,29 +236,81 @@ h2 {
     width: min(100%, 420px);
 }
 
+.input-stepper {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 58px 1fr 58px;
+    gap: 8px;
+    align-items: stretch;
+}
+
+.step-btn {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 2px solid var(--accent-primary);
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(129, 140, 248, 0.38), rgba(79, 70, 229, 0.6));
+    color: #ffffff;
+    font-size: 1.8rem;
+    font-weight: 800;
+    line-height: 1;
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 6px 14px rgba(79, 70, 229, 0.28);
+}
+
+.step-btn:hover {
+    border-color: var(--accent-light);
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.35);
+}
+
+.step-btn:active {
+    transform: translateY(0);
+}
+
 .form-input {
     width: 100%;
-    padding: clamp(10px, 2vw, 12px) clamp(12px, 3vw, 16px);
-    font-size: clamp(0.9rem, 2vw, 1rem);
+    padding: clamp(11px, 2.2vw, 13px) clamp(14px, 3.2vw, 18px);
+    font-size: clamp(0.95rem, 2.2vw, 1.05rem);
     border: 2px solid var(--accent-primary);
-    border-radius: 12px;
-    background: rgba(99, 102, 241, 0.08);
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(24, 30, 48, 0.55));
     color: var(--text-light);
     transition: all 0.3s ease;
     text-align: center;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    box-shadow: inset 0 0 0 1px rgba(167, 139, 250, 0.15);
 }
 
 .form-input::placeholder {
-    color: var(--text-muted);
+    color: #8ea0c5;
 }
 
 .form-input:focus {
     outline: none;
     border-color: var(--accent-light);
-    background: rgba(139, 92, 246, 0.12);
-    box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.18), rgba(24, 30, 48, 0.62));
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.22), 0 0 20px rgba(167, 139, 250, 0.28);
+}
+
+/* Quita los controles nativos (flechas) en input number */
+.form-input[type="number"] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.form-input[type="number"]::-webkit-outer-spin-button,
+.form-input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 /* Botones */
