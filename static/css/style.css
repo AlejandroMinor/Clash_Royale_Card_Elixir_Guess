@@ -226,7 +226,7 @@ h2 {
     height: auto;
     width: clamp(160px, 36vw, 240px);
     display: block;
-    margin-top: -15px;
+    margin-top: -10px;
     margin-bottom: -25px;
     border-radius: 16px;
     box-shadow: none;

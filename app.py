@@ -1,3 +1,4 @@
+import json
 import random
 import time
 
@@ -8,12 +9,20 @@ app = Flask(__name__)
 trivia = elixir_trivia.ElixirTrivia()
 
 
+with open('data/card_translations.json', 'r', encoding='utf-8') as f:
+    CARD_TRANSLATIONS = json.load(f)
+
+def get_translated_card_name(card):
+    card_id = str(card.get('id'))
+    return CARD_TRANSLATIONS.get(card_id, card.get('name'))
+
+
 @app.route('/')
 def index():
     number_of_cards = len(trivia.cards['items'])
     card = trivia.get_random_card()
     icon_urls = card.get('iconUrls') or {}
-    card_name = card.get('name')
+    card_name = get_translated_card_name(card)
     card_cost = card.get('elixirCost')
     card_img_url = icon_urls.get('medium')
     card_rarity = card.get('rarity')
@@ -52,7 +61,7 @@ def next_card():
     icon_urls = card.get('iconUrls') or {}
     return jsonify({
         'done': False,
-        'card_name': card.get('name'),
+        'card_name': get_translated_card_name(card),
         'card_cost': card.get('elixirCost'),
         'card_img_url': icon_urls.get('medium'),
         'card_rarity': card.get('rarity'),
@@ -65,7 +74,7 @@ def cards_metadata():
     return jsonify({
         'items': [
             {
-                'name': card.get('name'),
+                'name': get_translated_card_name(card),
                 'rarity': card.get('rarity'),
             }
             for card in trivia.cards['items']
