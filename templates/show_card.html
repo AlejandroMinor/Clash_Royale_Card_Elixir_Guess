@@ -22,11 +22,32 @@
             <p class="challenge-label">Adivina el Elixir</p>
 
             <div class="form-group">
-                <div class="input-stepper" aria-label="Selector de costo de elixir">
+                <div class="input-mode-switch" aria-label="Selector de modo de respuesta">
+                    <span class="mode-label">Modo actual</span>
+                    <label class="mode-switch" for="answer_mode_toggle">
+                        <input type="checkbox" id="answer_mode_toggle" aria-label="Activar modo grid">
+                        <span class="mode-switch-slider"></span>
+                    </label>
+                    <span class="mode-label">Modo grid</span>
+                </div>
+
+                <div class="input-stepper answer-mode-panel" id="stepper_mode_panel" aria-label="Selector de costo de elixir">
                     <button type="button" class="step-btn" id="step_down" aria-label="Disminuir elixir">-</button>
                     <input type="number" inputmode="none" class="form-input" id="respuesta_input"
                         name="respuesta" required min="0" max="10" step="1" value="0" readonly>
                     <button type="button" class="step-btn" id="step_up" aria-label="Aumentar elixir">+</button>
+                </div>
+
+                <div class="answer-grid hidden_element" id="grid_mode_panel" aria-label="Grid de costo de elixir">
+                    <button type="button" class="grid-btn" data-value="1">1</button>
+                    <button type="button" class="grid-btn" data-value="2">2</button>
+                    <button type="button" class="grid-btn" data-value="3">3</button>
+                    <button type="button" class="grid-btn" data-value="4">4</button>
+                    <button type="button" class="grid-btn" data-value="5">5</button>
+                    <button type="button" class="grid-btn" data-value="6">6</button>
+                    <button type="button" class="grid-btn" data-value="7">7</button>
+                    <button type="button" class="grid-btn" data-value="8">8</button>
+                    <button type="button" class="grid-btn" data-value="9">9</button>
                 </div>
                 <input type="hidden" name="card_name" value="{{ card_name }}">
                 <input type="hidden" name="card_cost" value="{{ card_cost }}">

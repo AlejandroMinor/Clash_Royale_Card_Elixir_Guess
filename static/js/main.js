@@ -3,6 +3,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const inputField = document.getElementById('respuesta_input');
     const stepDownBtn = document.getElementById('step_down');
     const stepUpBtn = document.getElementById('step_up');
+    const answerModeToggle = document.getElementById('answer_mode_toggle');
+    const stepperModePanel = document.getElementById('stepper_mode_panel');
+    const gridModePanel = document.getElementById('grid_mode_panel');
+    const gridButtons = Array.from(document.querySelectorAll('.grid-btn'));
+
+    const syncGridSelection = () => {
+        if (!inputField || gridButtons.length === 0) {
+            return;
+        }
+
+        const currentValue = String(Number.parseInt(inputField.value || '0', 10));
+        gridButtons.forEach((btn) => {
+            const isSelected = btn.dataset.value === currentValue;
+            btn.classList.toggle('is-selected', isSelected);
+            btn.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+        });
+    };
 
     const clampAnswerValue = (nextValue) => {
         const min = Number.parseInt(inputField?.min ?? '0', 10);
@@ -17,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         inputField.value = String(clampAnswerValue(nextValue));
+        syncGridSelection();
     };
 
     const bumpAnswerValue = (delta) => {
@@ -54,6 +72,35 @@ document.addEventListener('DOMContentLoaded', function() {
             bumpAnswerValue(1);
         });
     }
+
+    const setInputMode = (gridModeEnabled) => {
+        if (stepperModePanel) {
+            stepperModePanel.classList.toggle('hidden_element', gridModeEnabled);
+        }
+
+        if (gridModePanel) {
+            gridModePanel.classList.toggle('hidden_element', !gridModeEnabled);
+        }
+    };
+
+    if (answerModeToggle) {
+        answerModeToggle.addEventListener('change', function() {
+            setInputMode(answerModeToggle.checked);
+        });
+
+        setInputMode(answerModeToggle.checked);
+    }
+
+    gridButtons.forEach((btn) => {
+        btn.addEventListener('click', function() {
+            const parsed = Number.parseInt(btn.dataset.value || '', 10);
+            if (Number.isFinite(parsed)) {
+                setAnswerValue(parsed);
+            }
+        });
+    });
+
+    syncGridSelection();
     
     updateStats();
     hydrateRarityForStoredCards();
