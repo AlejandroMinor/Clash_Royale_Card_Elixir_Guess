@@ -4,16 +4,12 @@
 
 <head>
     {% block title %}
-    <title>Desafio de Elixir</title>
+    <title>Adivina el Elixir</title>
     {% endblock %}
 </head>
 
 <body>
     {% block content %}
-    <div class="game-header">
-        <h1>⚔️ Desafio de Elixir: ¿Cuanto Cuesta? ⚔️</h1>
-    </div>
-
     <div class="game-content">
         <div class="card-container">
             <div class="card-image-container">
@@ -23,6 +19,7 @@
             </div>
 
             <h2 id="card_name">{{ card_name }}</h2>
+            <p class="challenge-label">Adivina el Elixir</p>
 
             <div class="form-group">
                 <div class="input-stepper" aria-label="Selector de costo de elixir">
