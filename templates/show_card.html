@@ -1,79 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 {% extends 'base.html' %}
 
 <head>
     {% block title %}
-    <title>{{ card_name }}</title>
-    <style>
-        .hidden_element {
-            display: none !important;
-        }
-    
-        .shake_image {
-            filter: grayscale(1);
-            animation: shake 0.5s;
-        }
-    
-        @keyframes shake {
-            0% {
-                transform: translate(0, 0);
-            }
-    
-            20% {
-                transform: translate(-10px, 0);
-            }
-    
-            40% {
-                transform: translate(10px, 0);
-            }
-    
-            60% {
-                transform: translate(-10px, 0);
-            }
-    
-            80% {
-                transform: translate(10px, 0);
-            }
-    
-            100% {
-                transform: translate(0, 0);
-            }
-        }
-    </style>
+    <title>{{ card_name }} - Adivina el Costo</title>
     {% endblock %}
 </head>
 
 <body>
     {% block content %}
-    <div class="container">
-        <div class="card bg-secondary text-white">
-            <div class="card-body text-center">
-                <h1>Adivina el costo de elixir</h1>
-                {% if card_img_url %}
-                <img src="{{ card_img_url }}" alt="{{ card_name }}" class="img-fluid" width="200rem" id="image">
-                {% endif %}
-                <h2>{{ card_name }}</h2>
-                <form action="/respuesta" method="post">
-                    <div class="form-group">
-                        <input type="number" inputmode="numeric" class="form-control-sm mb-2"
-                            name="respuesta" required placeholder="Costo de Elixir">
-                    </div>
-                    <input type="hidden" name="card_cost" value="{{ card_cost }}">
-                    <!-- <button type="submit" class="btn btn-primary">Enviar</button> -->
-                </form>
-                <button onclick="answer('{{ card_name }}')" class="btn btn-primary">Enviar</button>
-                <div class="alert alert-success mt-2 hidden_element" role="alert" id="success_alert">
-                    ¡Correcto! 
-                </div>
-                <div class="alert alert-danger mt-2 hidden_element" role="alert" id="error_alert">
-                    ¡Incorrecto! Inténtalo de nuevo
-                </div>
-            </div>
-            <ul id="correct_cards_list"></ul>
-        </div>
-        <button onclick="confirmReset()" class="btn btn-danger mt-2">Reiniciar Juego</button>
+    <div class="game-header">
+        <h1>⚔️ Adivina el Costo del Cartas ⚔️</h1>
     </div>
+
+    <div class="game-content">
+        <div class="card-container">
+            <div class="card-image-container">
+                {% if card_img_url %}
+                <img src="{{ card_img_url }}" alt="{{ card_name }}" class="card-image" id="image">
+                {% endif %}
+            </div>
+
+            <h2>{{ card_name }}</h2>
+
+            <div class="form-group">
+                <input type="number" inputmode="numeric" class="form-input" id="respuesta_input"
+                    name="respuesta" required placeholder="¿Cuál es el costo de elixir?">
+                <input type="hidden" name="card_cost" value="{{ card_cost }}">
+            </div>
+
+            <button onclick="answer('{{ card_name }}')" class="btn-submit">Enviar Respuesta</button>
+
+            <div class="alert alert-success hidden_element" role="alert" id="success_alert">
+                ¡Correcto! Lo hiciste bien.
+            </div>
+
+            <div class="alert alert-danger hidden_element" role="alert" id="error_alert">
+                Incorrecto. Intentalo de nuevo.
+            </div>
+
+            {% if number_of_cards %}
+            <div style="text-align: center; margin-top: 10px; margin-bottom: 15px; color: var(--text-muted); font-size: 0.85rem; letter-spacing: 0.5px;">
+                Progreso: <strong style="color: var(--accent-light);" id="progress_text">0/{{ number_of_cards }}</strong>
+            </div>
+            {% endif %}
+
+            <ul id="correct_cards_list"></ul>
+
+            <button onclick="confirmReset()" class="btn-reset">Reiniciar Juego</button>
+        </div>
+    </div>
+
     <script src="{{ url_for('static', filename='js/main.js') }}" onload="sessionStorage.setItem('number_of_cards', '{{ number_of_cards }}'); validateGame('{{ number_of_cards }}', '{{ card_name }}'); loadCorrectCards('{{ number_of_cards }}');"></script>
     {% endblock %}
 </body>

@@ -3,20 +3,47 @@
 {% extends 'base.html' %}
 <head>
     {% block title %}
-    <title>Respuesta</title>
-    {% endblock %}
+    <title>Respuesta - Clash Royale Trivia</title>
+    <style>
+        .response-container {
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
 
+        .response-alert {
+            border-radius: 15px;
+            padding: 40px 30px;
+            font-size: 1.3rem;
+            animation: slideInDown 0.6s ease-out;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+    {% endblock %}
 </head>
 
 <body>
     {% block content %}
-    <div class="alert {{ alert_class }}" role="alert">
-        {{ alert_message }}
+    <div class="response-container">
+        <div class="alert response-alert {{ alert_class }}" role="alert">
+            {{ alert_message }}
+        </div>
     </div>
     <script>
         setTimeout(function() {
             window.location.href = "/";
-        }, 1000);
+        }, 1500);
     </script>
     {% endblock %}
 </body>

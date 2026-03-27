@@ -1,0 +1,441 @@
+:root {
+    --primary-dark: #0f1419;
+    --primary-light: #1a1f2e;
+    --accent-primary: #6366f1;
+    --accent-secondary: #8b5cf6;
+    --accent-light: #a78bfa;
+    --text-light: #f0f4f8;
+    --text-muted: #94a3b8;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+    color: var(--text-light);
+    min-height: 100vh;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+}
+
+/* Header */
+.game-header {
+    width: 100%;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.05));
+    border-bottom: 2px solid var(--accent-primary);
+    padding: 20px 15px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.1);
+}
+
+.game-header h1 {
+    margin: 0;
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-light), var(--accent-primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 2px;
+}
+
+/* Content */
+.game-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 10px;
+    flex: 1;
+}
+
+/* Card Principal */
+.card-container {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: clamp(15px, 4vw, 25px);
+    box-shadow: none;
+    backdrop-filter: none;
+    animation: slideInDown 0.6s ease-out;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Animaciones */
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+@keyframes shake {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(-15px, -10px) rotate(-2deg); }
+    50% { transform: translate(15px, 10px) rotate(2deg); }
+    75% { transform: translate(-15px, 10px) rotate(-2deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.shake_image {
+    filter: grayscale(1);
+    animation: shake 0.5s;
+}
+
+/* Títulos */
+h1 {
+    text-align: center;
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    font-weight: 700;
+    margin-bottom: clamp(20px, 4vw, 30px);
+    background: linear-gradient(135deg, var(--accent-light), var(--accent-primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 1px;
+    animation: fadeIn 0.8s ease-out;
+}
+
+h2 {
+    font-size: clamp(1.3rem, 4vw, 1.6rem);
+    font-weight: 600;
+    margin-top: clamp(15px, 3vw, 20px);
+    margin-bottom: clamp(20px, 3vw, 25px);
+    color: var(--accent-light);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Imagen de Carta */
+.card-image-container {
+    text-align: center;
+    margin-bottom: clamp(20px, 5vw, 25px);
+    position: relative;
+}
+
+.card-image {
+    max-width: 100%;
+    height: auto;
+    width: clamp(120px, 30vw, 180px);
+    border-radius: 16px;
+    box-shadow: none;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.card-image:hover {
+    transform: scale(1.05);
+    filter: brightness(1.15);
+}
+
+/* Formulario */
+.form-group {
+    margin: clamp(18px, 4vw, 22px) 0;
+    width: min(100%, 420px);
+}
+
+.form-input {
+    width: 100%;
+    padding: clamp(10px, 2vw, 12px) clamp(12px, 3vw, 16px);
+    font-size: clamp(0.9rem, 2vw, 1rem);
+    border: 2px solid var(--accent-primary);
+    border-radius: 12px;
+    background: rgba(99, 102, 241, 0.08);
+    color: var(--text-light);
+    transition: all 0.3s ease;
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.form-input::placeholder {
+    color: var(--text-muted);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--accent-light);
+    background: rgba(139, 92, 246, 0.12);
+    box-shadow: 0 0 20px rgba(167, 139, 250, 0.3);
+}
+
+/* Botones */
+.btn-submit {
+    width: min(100%, 420px);
+    padding: clamp(10px, 2vw, 11px) clamp(20px, 5vw, 25px);
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
+    font-weight: 600;
+    border: 2px solid var(--accent-primary);
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+    margin-top: clamp(12px, 3vw, 15px);
+}
+
+.btn-submit:hover {
+    background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-light) 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(139, 92, 246, 0.4);
+    border-color: var(--accent-light);
+}
+
+.btn-submit:active {
+    transform: translateY(-1px);
+}
+
+.btn-reset {
+    width: min(100%, 420px);
+    padding: clamp(9px, 2vw, 10px) clamp(15px, 4vw, 20px);
+    font-size: clamp(0.8rem, 1.8vw, 0.9rem);
+    font-weight: 600;
+    border: 2px solid var(--danger-color);
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.1));
+    color: #ff8080;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: clamp(15px, 3vw, 18px);
+    box-shadow: 0 5px 15px rgba(239, 68, 68, 0.2);
+}
+
+.btn-reset:hover {
+    background: linear-gradient(135deg, var(--danger-color) 0%, #dc2626 100%);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4);
+}
+
+/* Alertas */
+.alert {
+    border-radius: 12px;
+    padding: clamp(12px, 3vw, 15px) clamp(16px, 4vw, 20px);
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
+    font-weight: 600;
+    text-align: center;
+    border: none;
+    animation: fadeIn 0.5s ease-out;
+    margin: clamp(12px, 2vw, 15px) 0;
+    letter-spacing: 0.5px;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.15) 100%);
+    color: #6ee7b7;
+    border-left: 4px solid #10b981;
+    box-shadow: 0 5px 20px rgba(16, 185, 129, 0.2);
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(220, 38, 38, 0.15) 100%);
+    color: #ff8080;
+    border-left: 4px solid var(--danger-color);
+    box-shadow: 0 5px 20px rgba(239, 68, 68, 0.2);
+}
+
+.alert-info {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(139, 92, 246, 0.15) 100%);
+    color: #a5b4fc;
+    border-left: 4px solid var(--accent-primary);
+    box-shadow: 0 5px 20px rgba(99, 102, 241, 0.2);
+}
+
+.hidden_element {
+    display: none !important;
+}
+
+/* Lista de cartas correctas */
+#correct_cards_list {
+    list-style: none;
+    margin: clamp(14px, 3vw, 18px) 0 0 0;
+    padding: clamp(12px, 3vw, 16px);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.05) 100%);
+    border-radius: 14px;
+    border: 2px solid var(--accent-primary);
+}
+
+#correct_cards_list li {
+    padding: clamp(8px, 2vw, 10px) clamp(12px, 2vw, 14px);
+    margin: clamp(5px, 1vw, 6px) 0;
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.15), transparent);
+    border-radius: 10px;
+    border-left: 3px solid var(--success-color);
+    color: #6ee7b7;
+    font-weight: 500;
+    animation: slideInDown 0.4s ease-out;
+    font-size: clamp(0.8rem, 2vw, 0.9rem);
+}
+
+#correct_cards_list li::before {
+    content: "✓ ";
+    color: var(--success-color);
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+/* Estadísticas */
+.stats-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(12px, 3vw, 15px);
+    margin: clamp(22px, 5vw, 28px) 0 clamp(15px, 4vw, 20px) 0;
+}
+
+.stat-box {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%);
+    border: 2px solid var(--accent-primary);
+    border-radius: 14px;
+    padding: clamp(14px, 3vw, 18px);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+    border-color: var(--accent-light);
+}
+
+.stat-label {
+    font-size: clamp(0.65rem, 1.8vw, 0.75rem);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: clamp(8px, 2vw, 10px);
+    font-weight: 600;
+}
+
+.stat-value {
+    font-size: clamp(1.8rem, 6vw, 2.2rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-light), var(--accent-primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .game-header {
+        padding: 15px 10px;
+    }
+
+    .game-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .game-content {
+        padding: 15px 8px;
+    }
+
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+        margin-top: 12px;
+        margin-bottom: 18px;
+    }
+
+    .card-image-container {
+        margin-bottom: 18px;
+    }
+
+    .card-image {
+        width: clamp(100px, 25vw, 140px);
+    }
+}
+
+@media (min-width: 481px) {
+    .game-header {
+        padding: 25px 20px;
+    }
+
+    .game-content {
+        padding: 30px 20px;
+    }
+}
+
+/* Efectos especiales */
+.glow-effect {
+    animation: pulse 2s infinite;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--primary-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent-primary);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-light);
+}
