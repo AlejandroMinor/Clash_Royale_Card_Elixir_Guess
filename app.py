@@ -53,7 +53,7 @@ def respuesta():
 @app.route('/api/next-card')
 def next_card():
     excluded = set(request.args.getlist('exclude'))
-    available_cards = [card for card in trivia.cards['items'] if card.get('name') not in excluded]
+    available_cards = [card for card in trivia.cards['items'] if get_translated_card_name(card) not in excluded]
 
     if not available_cards:
         return jsonify({'done': True, 'number_of_cards': len(trivia.cards['items'])})
