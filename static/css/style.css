@@ -125,15 +125,39 @@ body {
 
 @keyframes shake {
     0% { transform: translate(0, 0) rotate(0deg); }
-    25% { transform: translate(-15px, -10px) rotate(-2deg); }
-    50% { transform: translate(15px, 10px) rotate(2deg); }
-    75% { transform: translate(-15px, 10px) rotate(-2deg); }
+    25% { transform: translate(-8px, -5px) rotate(-1deg); }
+    50% { transform: translate(8px, 5px) rotate(1deg); }
+    75% { transform: translate(-8px, 5px) rotate(-1deg); }
     100% { transform: translate(0, 0) rotate(0deg); }
 }
 
+@keyframes correctPulse {
+    0% { transform: scale(1); filter: brightness(1) saturate(1); }
+    45% { transform: scale(1.06); filter: brightness(1.2) saturate(1.15); }
+    100% { transform: scale(1); filter: brightness(1) saturate(1); }
+}
+
+@keyframes softSwap {
+    0% { opacity: 1; }
+    50% { opacity: 0.78; }
+    100% { opacity: 1; }
+}
+
+@keyframes imageFadeIn {
+    from { opacity: 0.55; transform: scale(0.985); }
+    to { opacity: 1; transform: scale(1); }
+}
+
 .shake_image {
-    filter: grayscale(1);
-    animation: shake 0.5s;
+    animation: shake 0.22s ease-in-out;
+}
+
+.correct_image {
+    animation: correctPulse 0.3s ease-out;
+}
+
+.card-swapping {
+    animation: softSwap 0.28s ease-out;
 }
 
 /* Títulos */
@@ -166,6 +190,10 @@ h2 {
     text-align: center;
     margin-bottom: clamp(20px, 5vw, 25px);
     position: relative;
+    min-height: clamp(140px, 32vw, 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .card-image {
@@ -175,6 +203,26 @@ h2 {
     border-radius: 16px;
     box-shadow: none;
     transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.card-image-overlay {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.99);
+    opacity: 0;
+    z-index: 2;
+    pointer-events: none;
+    transition: opacity 0.19s ease-out, transform 0.19s ease-out;
+}
+
+.card-image-overlay.visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.card-image.image-fade-in {
+    animation: imageFadeIn 0.22s ease-out;
 }
 
 .card-image:hover {
