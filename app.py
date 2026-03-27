@@ -1,4 +1,5 @@
 import json
+import os
 import random
 import time
 
@@ -8,8 +9,8 @@ import elixir_trivia
 app = Flask(__name__)
 trivia = elixir_trivia.ElixirTrivia()
 
-
-with open('data/card_translations.json', 'r', encoding='utf-8') as f:
+TRANSLATIONS_PATH = os.path.join(os.path.dirname(__file__), 'data', 'card_translations.json')
+with open(TRANSLATIONS_PATH, 'r', encoding='utf-8') as f:
     CARD_TRANSLATIONS = json.load(f)
 
 def get_translated_card_name(card):
