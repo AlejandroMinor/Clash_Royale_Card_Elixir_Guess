@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request
+import random
+
+from flask import Flask, jsonify, render_template, request
 import elixir_trivia
 
 app = Flask(__name__)
@@ -27,7 +29,26 @@ def respuesta():
         alert_message = f'Respuesta incorrecta'
         alert_class = 'alert-danger'
 
-    return render_template('responce.html', alert_message=alert_message, alert_class=alert_class)
+    return render_template('response.html', alert_message=alert_message, alert_class=alert_class)
+
+
+@app.route('/api/next-card')
+def next_card():
+    excluded = set(request.args.getlist('exclude'))
+    available_cards = [card for card in trivia.cards['items'] if card.get('name') not in excluded]
+
+    if not available_cards:
+        return jsonify({'done': True, 'number_of_cards': len(trivia.cards['items'])})
+
+    card = random.choice(available_cards)
+    icon_urls = card.get('iconUrls') or {}
+    return jsonify({
+        'done': False,
+        'card_name': card.get('name'),
+        'card_cost': card.get('elixirCost'),
+        'card_img_url': icon_urls.get('medium'),
+        'number_of_cards': len(trivia.cards['items']),
+    })
 
 
 if __name__ == '__main__':

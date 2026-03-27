@@ -4,7 +4,7 @@
 
 <head>
     {% block title %}
-    <title>{{ card_name }} - Adivina el Costo</title>
+    <title>Adivina el Costo</title>
     {% endblock %}
 </head>
 
@@ -22,15 +22,16 @@
                 {% endif %}
             </div>
 
-            <h2>{{ card_name }}</h2>
+            <h2 id="card_name">{{ card_name }}</h2>
 
             <div class="form-group">
                 <input type="number" inputmode="numeric" class="form-input" id="respuesta_input"
                     name="respuesta" required placeholder="¿Cuál es el costo de elixir?">
+                <input type="hidden" name="card_name" value="{{ card_name }}">
                 <input type="hidden" name="card_cost" value="{{ card_cost }}">
             </div>
 
-            <button onclick="answer('{{ card_name }}')" class="btn-submit">Enviar Respuesta</button>
+            <button onclick="answer()" class="btn-submit">Enviar Respuesta</button>
 
             <div class="alert alert-success hidden_element" role="alert" id="success_alert">
                 ¡Correcto! Lo hiciste bien.
