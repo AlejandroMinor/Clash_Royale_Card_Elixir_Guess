@@ -4,9 +4,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const stepDownBtn = document.getElementById('step_down');
     const stepUpBtn = document.getElementById('step_up');
     const answerModeToggle = document.getElementById('answer_mode_toggle');
+    const autoAnswerToggle = document.getElementById('auto_answer_toggle');
+    const autoModeSwitchRow = document.getElementById('auto_mode_switch_row');
+    const submitAnswerBtn = document.getElementById('submit_answer_btn');
     const stepperModePanel = document.getElementById('stepper_mode_panel');
     const gridModePanel = document.getElementById('grid_mode_panel');
     const gridButtons = Array.from(document.querySelectorAll('.grid-btn'));
+
+    const refreshSubmitButtonState = () => {
+        if (!submitAnswerBtn) {
+            return;
+        }
+
+        const hideSubmit = Boolean(answerModeToggle?.checked && autoAnswerToggle?.checked);
+        submitAnswerBtn.classList.toggle('hidden_element', hideSubmit);
+        submitAnswerBtn.disabled = hideSubmit;
+        submitAnswerBtn.setAttribute('aria-hidden', hideSubmit ? 'true' : 'false');
+        submitAnswerBtn.style.display = hideSubmit ? 'none' : '';
+        submitAnswerBtn.style.visibility = hideSubmit ? 'hidden' : '';
+    };
 
     const syncGridSelection = () => {
         if (!inputField || gridButtons.length === 0) {
@@ -22,9 +38,9 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     const clampAnswerValue = (nextValue) => {
-        const min = Number.parseInt(inputField?.min ?? '0', 10);
-        const max = Number.parseInt(inputField?.max ?? '10', 10);
-        const normalized = Number.isFinite(nextValue) ? nextValue : 0;
+        const min = Number.parseInt(inputField?.min ?? '1', 10);
+        const max = Number.parseInt(inputField?.max ?? '9', 10);
+        const normalized = Number.isFinite(nextValue) ? nextValue : min;
         return Math.max(min, Math.min(max, normalized));
     };
 
@@ -81,6 +97,21 @@ document.addEventListener('DOMContentLoaded', function() {
         if (gridModePanel) {
             gridModePanel.classList.toggle('hidden_element', !gridModeEnabled);
         }
+
+        if (autoModeSwitchRow) {
+            autoModeSwitchRow.classList.toggle('hidden_element', !gridModeEnabled);
+        }
+
+        if (inputField) {
+            if (gridModeEnabled) {
+                inputField.value = '';
+                syncGridSelection();
+            } else if (!inputField.value) {
+                setAnswerValue(1);
+            }
+        }
+
+        refreshSubmitButtonState();
     };
 
     if (answerModeToggle) {
@@ -91,16 +122,31 @@ document.addEventListener('DOMContentLoaded', function() {
         setInputMode(answerModeToggle.checked);
     }
 
+    if (autoAnswerToggle) {
+        autoAnswerToggle.addEventListener('change', function() {
+            refreshSubmitButtonState();
+        });
+    }
+
     gridButtons.forEach((btn) => {
         btn.addEventListener('click', function() {
             const parsed = Number.parseInt(btn.dataset.value || '', 10);
             if (Number.isFinite(parsed)) {
                 setAnswerValue(parsed);
+
+                const shouldAutoSubmit = Boolean(
+                    answerModeToggle?.checked
+                    && autoAnswerToggle?.checked
+                );
+                if (shouldAutoSubmit) {
+                    answer();
+                }
             }
         });
     });
 
     syncGridSelection();
+    refreshSubmitButtonState();
     
     updateStats();
     hydrateRarityForStoredCards();
@@ -183,28 +229,16 @@ function transitionCardImage(imageEl, nextImageUrl, nextCardName, imageIsReady) 
         return;
     }
 
-    const overlay = imageEl.cloneNode(false);
-    overlay.removeAttribute('id');
-    overlay.classList.remove('image-fade-in');
-    overlay.classList.add('card-image-overlay');
-    overlay.src = nextImageUrl;
-    overlay.alt = nextCardName || 'Carta';
-
-    const parent = imageEl.parentElement;
-    if (!parent) {
-        imageEl.src = nextImageUrl;
-        imageEl.alt = nextCardName || 'Carta';
-        return;
-    }
-
-    parent.appendChild(overlay);
-    requestAnimationFrame(() => overlay.classList.add('visible'));
+    // Single-element fade swap avoids layer misalignment and feels more natural.
+    imageEl.classList.add('is-fading');
 
     setTimeout(() => {
         imageEl.src = nextImageUrl;
         imageEl.alt = nextCardName || 'Carta';
-        overlay.remove();
-    }, 190);
+        requestAnimationFrame(() => {
+            imageEl.classList.remove('is-fading');
+        });
+    }, 80);
 }
 
 function normalizeCorrectCard(card) {
@@ -263,6 +297,34 @@ function getCorrectCardNames() {
     return getCorrectCards().map((card) => card.name);
 }
 
+function isGridModeEnabled() {
+    return Boolean(document.getElementById('answer_mode_toggle')?.checked);
+}
+
+function resetAnswerInputForMode() {
+    const input = document.querySelector('input[name="respuesta"]');
+    if (!input) {
+        return;
+    }
+
+    if (isGridModeEnabled()) {
+        input.value = '';
+        clearGridButtonSelection();
+        return;
+    }
+
+    input.value = '1';
+}
+
+function clearGridButtonSelection() {
+    const gridButtons = document.querySelectorAll('.grid-btn');
+    gridButtons.forEach((btn) => {
+        btn.classList.remove('is-selected');
+        btn.setAttribute('aria-pressed', 'false');
+        btn.blur();
+    });
+}
+
 function answer() {
     const card_name = (
         document.querySelector('input[name="card_name"]')?.value
@@ -286,6 +348,9 @@ function answer() {
         return;
     }
 
+    // Cada intento limpia el marcado del grid para evitar estado pegado.
+    clearGridButtonSelection();
+
     if (parseInt(card_cost) === parseInt(respuesta)) {
         alert_answer.classList.remove('hidden_element');  
         let correctCards = getCorrectCards();
@@ -304,12 +369,12 @@ function answer() {
         const image = document.getElementById('image');
         if (image) {
             image.classList.add('correct_image');
-            setTimeout(() => image.classList.remove('correct_image'), 300);
+            setTimeout(() => image.classList.remove('correct_image'), 160);
         }
 
         setTimeout(function () {
             loadNextCard();
-        }, 500);
+        }, 230);
     } else {
         showError("¡Incorrecto! Inténtalo de nuevo.");
         const image = document.getElementById('image');
@@ -319,7 +384,7 @@ function answer() {
                 image.classList.remove('shake_image');
             }, 220);
         }
-        document.querySelector('input[name="respuesta"]').value = '0';
+        resetAnswerInputForMode();
         document.querySelector('input[name="respuesta"]').focus();
     }
 }
@@ -479,9 +544,13 @@ async function loadNextCard() {
             cardRarityEl.value = data.card_rarity || '';
         }
         if (inputEl) {
-            inputEl.value = '0';
+            resetAnswerInputForMode();
             inputEl.focus();
         }
+
+        // Cada carta nueva empieza sin botón del grid marcado.
+        clearGridButtonSelection();
+
         if (!imageEl && imageContainerEl && nextImageUrl) {
             imageEl = document.createElement('img');
             imageEl.id = 'image';

@@ -12,33 +12,47 @@
     {% block content %}
     <div class="game-content">
         <div class="card-container">
+            <div class="card-header-text">
+                <p class="challenge-label">Adivina el Elixir</p>
+                <h2 id="card_name">{{ card_name }}</h2>
+            </div>
+
             <div class="card-image-container">
                 {% if card_img_url %}
                 <img src="{{ card_img_url }}" alt="{{ card_name }}" class="card-image" id="image">
                 {% endif %}
             </div>
 
-            <h2 id="card_name">{{ card_name }}</h2>
-            <p class="challenge-label">Adivina el Elixir</p>
-
             <div class="form-group">
-                <div class="input-mode-switch" aria-label="Selector de modo de respuesta">
-                    <span class="mode-label">Modo actual</span>
-                    <label class="mode-switch" for="answer_mode_toggle">
-                        <input type="checkbox" id="answer_mode_toggle" aria-label="Activar modo grid">
-                        <span class="mode-switch-slider"></span>
-                    </label>
-                    <span class="mode-label">Modo grid</span>
+                <div class="mode-panel" aria-label="Opciones de modo">
+                    <p class="mode-panel-title">Modo</p>
+                    <div class="mode-switches">
+                        <div class="input-mode-switch" aria-label="Selector de modo de respuesta">
+                            <label class="mode-switch" for="answer_mode_toggle">
+                                <input type="checkbox" id="answer_mode_toggle" aria-label="Activar modo grid" checked>
+                                <span class="mode-switch-slider"></span>
+                            </label>
+                            <span class="mode-label">Grid</span>
+                        </div>
+
+                        <div class="input-mode-switch auto-mode-switch" id="auto_mode_switch_row" aria-label="Selector de modo automatico">
+                            <label class="mode-switch" for="auto_answer_toggle">
+                                <input type="checkbox" id="auto_answer_toggle" aria-label="Activar modo automatico" checked>
+                                <span class="mode-switch-slider"></span>
+                            </label>
+                            <span class="mode-label">Auto</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="input-stepper answer-mode-panel" id="stepper_mode_panel" aria-label="Selector de costo de elixir">
+                <div class="input-stepper answer-mode-panel hidden_element" id="stepper_mode_panel" aria-label="Selector de costo de elixir">
                     <button type="button" class="step-btn" id="step_down" aria-label="Disminuir elixir">-</button>
                     <input type="number" inputmode="none" class="form-input" id="respuesta_input"
-                        name="respuesta" required min="0" max="10" step="1" value="0" readonly>
+                        name="respuesta" required min="1" max="9" step="1" value="1" readonly>
                     <button type="button" class="step-btn" id="step_up" aria-label="Aumentar elixir">+</button>
                 </div>
 
-                <div class="answer-grid hidden_element" id="grid_mode_panel" aria-label="Grid de costo de elixir">
+                <div class="answer-grid" id="grid_mode_panel" aria-label="Grid de costo de elixir">
                     <button type="button" class="grid-btn" data-value="1">1</button>
                     <button type="button" class="grid-btn" data-value="2">2</button>
                     <button type="button" class="grid-btn" data-value="3">3</button>
@@ -54,7 +68,7 @@
                 <input type="hidden" name="card_rarity" value="{{ card_rarity }}">
             </div>
 
-            <button onclick="answer()" class="btn-submit">Enviar Respuesta</button>
+            <button onclick="answer()" class="btn-submit hidden_element" id="submit_answer_btn">Enviar Respuesta</button>
 
             <div class="alert alert-success hidden_element" role="alert" id="success_alert">
                 ¡Correcto! Lo hiciste bien.

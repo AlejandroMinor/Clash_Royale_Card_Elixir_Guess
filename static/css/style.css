@@ -139,9 +139,9 @@ body {
 }
 
 @keyframes correctPulse {
-    0% { transform: scale(1); filter: brightness(1) saturate(1); }
-    45% { transform: scale(1.06); filter: brightness(1.2) saturate(1.15); }
-    100% { transform: scale(1); filter: brightness(1) saturate(1); }
+    0% { filter: brightness(1) saturate(1); }
+    45% { filter: brightness(1.2) saturate(1.15); }
+    100% { filter: brightness(1) saturate(1); }
 }
 
 @keyframes softSwap {
@@ -151,8 +151,8 @@ body {
 }
 
 @keyframes imageFadeIn {
-    from { opacity: 0.55; transform: scale(0.985); }
-    to { opacity: 1; transform: scale(1); }
+    from { opacity: 0.85; }
+    to { opacity: 1; }
 }
 
 .shake_image {
@@ -160,7 +160,7 @@ body {
 }
 
 .correct_image {
-    animation: correctPulse 0.3s ease-out;
+    animation: correctPulse 0.16s ease-out;
 }
 
 .card-swapping {
@@ -186,15 +186,23 @@ h2 {
     font-size: clamp(1.3rem, 4vw, 1.6rem);
     font-weight: 400;
     margin-top: 0;
-    margin-bottom: 8px;
+    margin-bottom: 2px;
     color: var(--accent-light);
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
 
+.card-header-text {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 0;
+}
+
 .challenge-label {
-    margin: 0 0 14px 0;
+    margin: 0 0 2px 0;
     color: #a9b7d8;
     font-size: 0.78rem;
     font-weight: 700;
@@ -207,7 +215,7 @@ h2 {
     text-align: center;
     margin-bottom: 2px;
     position: relative;
-    min-height: clamp(140px, 32vw, 200px);
+    min-height: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -216,30 +224,37 @@ h2 {
 .card-image {
     max-width: 100%;
     height: auto;
-    width: clamp(120px, 30vw, 180px);
+    width: clamp(160px, 36vw, 240px);
+    display: block;
+    margin-top: -15px;
+    margin-bottom: -25px;
     border-radius: 16px;
     box-shadow: none;
-    transition: transform 0.3s ease, filter 0.3s ease;
+    transition: transform 0.3s ease, filter 0.3s ease, opacity 0.08s ease-out;
+}
+
+.card-image.is-fading {
+    opacity: 0.32;
 }
 
 .card-image-overlay {
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%) scale(0.99);
+    transform: translate(-50%, -50%);
     opacity: 0;
     z-index: 2;
     pointer-events: none;
-    transition: opacity 0.19s ease-out, transform 0.19s ease-out;
+    transition: opacity 0.12s ease-out;
 }
 
 .card-image-overlay.visible {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(-50%, -50%);
 }
 
 .card-image.image-fade-in {
-    animation: imageFadeIn 0.22s ease-out;
+    animation: imageFadeIn 0.12s ease-out;
 }
 
 .card-image:hover {
@@ -253,27 +268,61 @@ h2 {
     width: min(100%, 420px);
 }
 
-.input-mode-switch {
+.mode-panel {
     width: 100%;
+    margin-bottom: 12px;
+}
+
+.mode-panel-title {
+    text-align: center;
+    margin: 0 0 6px 0;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #b9c6df;
+    font-weight: 800;
+}
+
+.mode-switches {
+    width: min(100%, 320px);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(129, 140, 248, 0.22);
+}
+
+.input-mode-switch {
+    width: auto;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 8px;
+    margin-bottom: 0;
+}
+
+.auto-mode-switch {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    border-top: none;
 }
 
 .mode-label {
     font-size: 0.72rem;
     text-transform: uppercase;
-    letter-spacing: 0.7px;
+    letter-spacing: 0.9px;
     color: #b9c6df;
-    font-weight: 700;
+    font-weight: 800;
 }
 
 .mode-switch {
     position: relative;
-    width: 52px;
-    height: 28px;
+    width: 44px;
+    height: 24px;
     display: inline-block;
 }
 
@@ -298,8 +347,8 @@ h2 {
     position: absolute;
     left: 3px;
     top: 3px;
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     background: linear-gradient(135deg, #d8ccff, #9ea6ff);
     box-shadow: 0 2px 9px rgba(24, 14, 60, 0.5);
@@ -312,7 +361,7 @@ h2 {
 }
 
 .mode-switch input:checked + .mode-switch-slider::before {
-    transform: translateX(24px);
+    transform: translateX(20px);
 }
 
 .mode-switch input:focus-visible + .mode-switch-slider {
@@ -426,7 +475,6 @@ h2 {
     box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.4);
 }
 
-/* Quita los controles nativos (flechas) en input number */
 .form-input[type="number"] {
     appearance: textfield;
     -moz-appearance: textfield;
@@ -467,6 +515,10 @@ h2 {
     transform: translateY(-1px);
 }
 
+.btn-submit.hidden_element {
+    display: none !important;
+}
+
 .btn-reset {
     width: min(100%, 420px);
     padding: clamp(9px, 2vw, 10px) clamp(15px, 4vw, 20px);
@@ -480,7 +532,7 @@ h2 {
     transition: all 0.3s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-top: clamp(15px, 3vw, 18px);
+    margin-top: clamp(8px, 2vw, 10px);
     box-shadow: 0 5px 15px rgba(239, 68, 68, 0.2);
 }
 
@@ -695,15 +747,17 @@ h2 {
     h2 {
         font-size: 1.2rem;
         margin-top: 0;
-        margin-bottom: 18px;
+        margin-bottom: 4px;
     }
 
     .card-image-container {
         margin-bottom: 2px;
+        min-height: 0;
     }
 
     .card-image {
-        width: clamp(100px, 25vw, 140px);
+        width: clamp(145px, 44vw, 205px);
+        margin-top: -10px;
     }
 
     .input-stepper {
@@ -712,6 +766,10 @@ h2 {
 
     .mode-label {
         font-size: 0.68rem;
+    }
+
+    .mode-switches {
+        gap: 14px;
     }
 
     .grid-btn {
