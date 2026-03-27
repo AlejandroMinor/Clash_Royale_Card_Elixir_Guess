@@ -7,7 +7,7 @@
     <meta name="description" content="Adivina el costo de elixir de las cartas de Clash Royale">
     {% block title %}{% endblock %}
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css', v=asset_version if asset_version is defined else None) }}" rel="stylesheet">
 </head>
 
 <body>

@@ -355,22 +355,22 @@ h2 {
 /* Lista de cartas correctas */
 #correct_cards_list {
     list-style: none;
-    margin: clamp(14px, 3vw, 18px) 0 0 0;
-    padding: clamp(12px, 3vw, 16px);
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(139, 92, 246, 0.05) 100%);
-    border-radius: 14px;
-    border: 2px solid var(--accent-primary);
+    margin: clamp(10px, 2vw, 12px) 0 0 0;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+    border: none;
     display: grid;
     grid-template-columns: 1fr;
-    gap: 8px;
+    gap: 6px;
 }
 
 #correct_cards_list li {
-    padding: 10px 12px;
+    padding: 0;
     margin: 0;
-    background: linear-gradient(110deg, rgba(16, 185, 129, 0.13), rgba(11, 19, 45, 0.45));
-    border-radius: 12px;
-    border: 1px solid rgba(16, 185, 129, 0.55);
+    background: transparent;
+    border-radius: 0;
+    border: none;
     color: #c2fbe4;
     font-weight: 600;
     animation: slideInDown 0.4s ease-out;
@@ -387,17 +387,17 @@ h2 {
 .correct-card-info {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     min-width: 0;
 }
 
 .correct-card-thumb {
-    width: clamp(40px, 9vw, 52px);
-    height: clamp(40px, 9vw, 52px);
+    width: clamp(54px, 12vw, 72px);
+    height: clamp(54px, 12vw, 72px);
     object-fit: contain;
-    border-radius: 10px;
-    border: 1px solid rgba(167, 139, 250, 0.35);
-    background: rgba(15, 20, 25, 0.25);
+    border-radius: 0;
+    border: none;
+    background: transparent;
     flex: 0 0 auto;
 }
 
@@ -416,10 +416,11 @@ h2 {
 }
 
 .correct-card-cost {
-    color: var(--text-muted);
+    color: #9eb1d0;
     font-size: 0.74rem;
     margin-top: 2px;
     letter-spacing: 0.25px;
+    font-weight: 600;
 }
 
 .correct-card-badge {

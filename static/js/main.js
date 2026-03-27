@@ -10,7 +10,42 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     updateStats();
+    hydrateRarityForStoredCards();
 });
+
+const RARITY_LABELS = {
+    common: 'Comun',
+    rare: 'Especial',
+    epic: 'Epica',
+    legendary: 'Legendaria',
+    champion: 'Campeon',
+};
+
+function normalizeRarity(value) {
+    if (typeof value !== 'string') {
+        return null;
+    }
+
+    const key = value.trim().toLowerCase();
+    return RARITY_LABELS[key] ? key : null;
+}
+
+function rarityLabel(value) {
+    return RARITY_LABELS[value] || 'Sin rareza';
+}
+
+function normalizeCardNameKey(name) {
+    if (typeof name !== 'string') {
+        return '';
+    }
+
+    return name
+        .trim()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '');
+}
 
 function preloadImage(url, timeoutMs = 2500) {
     if (!url) {
@@ -82,7 +117,7 @@ function transitionCardImage(imageEl, nextImageUrl, nextCardName, imageIsReady) 
 function normalizeCorrectCard(card) {
     if (typeof card === 'string') {
         const name = card.trim();
-        return name ? { name, cost: null, image: null } : null;
+        return name ? { name, cost: null, image: null, rarity: null } : null;
     }
 
     if (!card || typeof card !== 'object') {
@@ -97,8 +132,9 @@ function normalizeCorrectCard(card) {
     const parsedCost = Number.parseInt(card.cost, 10);
     const cost = Number.isFinite(parsedCost) ? parsedCost : null;
     const image = typeof card.image === 'string' && card.image.trim() ? card.image.trim() : null;
+    const rarity = normalizeRarity(card.rarity);
 
-    return { name, cost, image };
+    return { name, cost, image, rarity };
 }
 
 function getCorrectCards() {
@@ -121,6 +157,7 @@ function getCorrectCards() {
             name: existing.name,
             cost: existing.cost ?? normalized.cost,
             image: existing.image || normalized.image,
+            rarity: existing.rarity ?? normalized.rarity,
         });
     });
 
@@ -142,6 +179,7 @@ function answer() {
     const card_cost = document.querySelector('input[name="card_cost"]').value;
     const respuesta = document.querySelector('input[name="respuesta"]').value;
     const card_image = document.getElementById('image')?.getAttribute('src') || null;
+    const card_rarity = normalizeRarity(document.querySelector('input[name="card_rarity"]')?.value);
     const alert_answer = document.getElementById('success_alert');
     const alert_error = document.getElementById('error_alert');
 
@@ -163,6 +201,7 @@ function answer() {
                 name: card_name,
                 cost: Number.parseInt(card_cost, 10),
                 image: card_image,
+                rarity: card_rarity,
             });
         }
         sessionStorage.setItem('correctCards', JSON.stringify(correctCards));
@@ -242,7 +281,7 @@ function loadCorrectCards(number_of_cards) {
 
             const costEl = document.createElement('span');
             costEl.className = 'correct-card-cost';
-            costEl.textContent = `Acierto #${index + 1}`;
+            costEl.textContent = rarityLabel(card.rarity);
 
             const badgeEl = document.createElement('span');
             badgeEl.className = 'correct-card-badge';
@@ -324,6 +363,7 @@ async function loadNextCard() {
         const cardNameEl = document.getElementById('card_name');
         const cardNameHiddenEl = document.querySelector('input[name="card_name"]');
         const cardCostEl = document.querySelector('input[name="card_cost"]');
+        const cardRarityEl = document.querySelector('input[name="card_rarity"]');
         const inputEl = document.querySelector('input[name="respuesta"]');
         const imageContainerEl = document.querySelector('.card-image-container');
         let imageEl = document.getElementById('image');
@@ -341,6 +381,9 @@ async function loadNextCard() {
         }
         if (cardCostEl) {
             cardCostEl.value = data.card_cost ?? '';
+        }
+        if (cardRarityEl) {
+            cardRarityEl.value = data.card_rarity || '';
         }
         if (inputEl) {
             inputEl.value = '';
@@ -363,5 +406,57 @@ async function loadNextCard() {
         updateStats();
     } catch (error) {
         showError('Error al cargar la siguiente carta.');
+    }
+}
+
+async function hydrateRarityForStoredCards() {
+    const cards = getCorrectCards();
+    if (!cards.some((card) => !card.rarity)) {
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/cards-metadata', {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+        });
+
+        if (!response.ok) {
+            return;
+        }
+
+        const data = await response.json();
+        const lookup = {};
+
+        (Array.isArray(data.items) ? data.items : []).forEach((item) => {
+            const key = normalizeCardNameKey(item?.name);
+            const rarity = normalizeRarity(item?.rarity);
+            if (key && rarity) {
+                lookup[key] = rarity;
+            }
+        });
+
+        let changed = false;
+        const hydrated = cards.map((card) => {
+            if (card.rarity) {
+                return card;
+            }
+
+            const rarity = lookup[normalizeCardNameKey(card.name)] || null;
+            if (!rarity) {
+                return card;
+            }
+
+            changed = true;
+            return { ...card, rarity };
+        });
+
+        if (changed) {
+            sessionStorage.setItem('correctCards', JSON.stringify(hydrated));
+            updateStats();
+            loadCorrectCards(parseInt(sessionStorage.getItem('number_of_cards')) || 0);
+        }
+    } catch (error) {
+        // Ignore hydration failures to avoid blocking gameplay.
     }
 }

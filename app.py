@@ -1,4 +1,5 @@
 import random
+import time
 
 from flask import Flask, jsonify, render_template, request
 import elixir_trivia
@@ -10,11 +11,18 @@ trivia = elixir_trivia.ElixirTrivia()
 @app.route('/')
 def index():
     number_of_cards = len(trivia.cards['items'])
-    card_name, card_cost, card_img_url = trivia.get_card_elixir_trivia()
+    card = trivia.get_random_card()
+    icon_urls = card.get('iconUrls') or {}
+    card_name = card.get('name')
+    card_cost = card.get('elixirCost')
+    card_img_url = icon_urls.get('medium')
+    card_rarity = card.get('rarity')
     return render_template('show_card.html', 
                          card_name=card_name, 
                          card_cost=card_cost, 
                          card_img_url=card_img_url, 
+                         card_rarity=card_rarity,
+                         asset_version=int(time.time()),
                          number_of_cards=number_of_cards)
 
 @app.route('/respuesta', methods=['POST'])
@@ -47,7 +55,22 @@ def next_card():
         'card_name': card.get('name'),
         'card_cost': card.get('elixirCost'),
         'card_img_url': icon_urls.get('medium'),
+        'card_rarity': card.get('rarity'),
         'number_of_cards': len(trivia.cards['items']),
+    })
+
+
+@app.route('/api/cards-metadata')
+def cards_metadata():
+    return jsonify({
+        'items': [
+            {
+                'name': card.get('name'),
+                'rarity': card.get('rarity'),
+            }
+            for card in trivia.cards['items']
+            if card.get('name')
+        ]
     })
 
 
