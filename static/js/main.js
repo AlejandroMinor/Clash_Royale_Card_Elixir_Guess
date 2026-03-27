@@ -79,16 +79,58 @@ function transitionCardImage(imageEl, nextImageUrl, nextCardName, imageIsReady) 
     }, 190);
 }
 
+function normalizeCorrectCard(card) {
+    if (typeof card === 'string') {
+        const name = card.trim();
+        return name ? { name, cost: null, image: null } : null;
+    }
+
+    if (!card || typeof card !== 'object') {
+        return null;
+    }
+
+    const name = typeof card.name === 'string' ? card.name.trim() : '';
+    if (!name) {
+        return null;
+    }
+
+    const parsedCost = Number.parseInt(card.cost, 10);
+    const cost = Number.isFinite(parsedCost) ? parsedCost : null;
+    const image = typeof card.image === 'string' && card.image.trim() ? card.image.trim() : null;
+
+    return { name, cost, image };
+}
+
 function getCorrectCards() {
     const raw = JSON.parse(sessionStorage.getItem('correctCards')) || [];
-    const cleaned = Array.from(new Set(
-        (Array.isArray(raw) ? raw : [])
-            .map((card) => (typeof card === 'string' ? card.trim() : ''))
-            .filter(Boolean)
-    ));
+    const uniqueByName = new Map();
 
+    (Array.isArray(raw) ? raw : []).forEach((card) => {
+        const normalized = normalizeCorrectCard(card);
+        if (!normalized) {
+            return;
+        }
+
+        const existing = uniqueByName.get(normalized.name);
+        if (!existing) {
+            uniqueByName.set(normalized.name, normalized);
+            return;
+        }
+
+        uniqueByName.set(normalized.name, {
+            name: existing.name,
+            cost: existing.cost ?? normalized.cost,
+            image: existing.image || normalized.image,
+        });
+    });
+
+    const cleaned = Array.from(uniqueByName.values());
     sessionStorage.setItem('correctCards', JSON.stringify(cleaned));
     return cleaned;
+}
+
+function getCorrectCardNames() {
+    return getCorrectCards().map((card) => card.name);
 }
 
 function answer() {
@@ -99,6 +141,7 @@ function answer() {
     ).trim();
     const card_cost = document.querySelector('input[name="card_cost"]').value;
     const respuesta = document.querySelector('input[name="respuesta"]').value;
+    const card_image = document.getElementById('image')?.getAttribute('src') || null;
     const alert_answer = document.getElementById('success_alert');
     const alert_error = document.getElementById('error_alert');
 
@@ -115,8 +158,12 @@ function answer() {
     if (parseInt(card_cost) === parseInt(respuesta)) {
         alert_answer.classList.remove('hidden_element');  
         let correctCards = getCorrectCards();
-        if (!correctCards.includes(card_name)) {
-            correctCards.push(card_name);
+        if (!correctCards.some((card) => card.name === card_name)) {
+            correctCards.push({
+                name: card_name,
+                cost: Number.parseInt(card_cost, 10),
+                image: card_image,
+            });
         }
         sessionStorage.setItem('correctCards', JSON.stringify(correctCards));
         updateStats();
@@ -172,7 +219,42 @@ function loadCorrectCards(number_of_cards) {
     if (correctCards.length > 0) {
         correctCards.forEach((card, index) => {
             const listItem = document.createElement('li');
-            listItem.textContent = card;
+            listItem.className = 'correct-card-item';
+
+            const infoWrapper = document.createElement('div');
+            infoWrapper.className = 'correct-card-info';
+
+            if (card.image) {
+                const thumb = document.createElement('img');
+                thumb.src = card.image;
+                thumb.alt = card.name;
+                thumb.className = 'correct-card-thumb';
+                thumb.loading = 'lazy';
+                infoWrapper.appendChild(thumb);
+            }
+
+            const textWrapper = document.createElement('div');
+            textWrapper.className = 'correct-card-text';
+
+            const nameEl = document.createElement('span');
+            nameEl.className = 'correct-card-name';
+            nameEl.textContent = card.name;
+
+            const costEl = document.createElement('span');
+            costEl.className = 'correct-card-cost';
+            costEl.textContent = `Acierto #${index + 1}`;
+
+            const badgeEl = document.createElement('span');
+            badgeEl.className = 'correct-card-badge';
+            badgeEl.textContent = card.cost !== null ? `${card.cost}` : '?';
+            badgeEl.title = card.cost !== null ? `Costo de elixir: ${card.cost}` : 'Costo de elixir desconocido';
+
+            textWrapper.appendChild(nameEl);
+            textWrapper.appendChild(costEl);
+            infoWrapper.appendChild(textWrapper);
+            listItem.appendChild(infoWrapper);
+            listItem.appendChild(badgeEl);
+
             listItem.style.animationDelay = (index * 0.1) + 's';
             correctCardsList.appendChild(listItem);
         });
@@ -180,8 +262,7 @@ function loadCorrectCards(number_of_cards) {
 }
 
 function verifyUniqueCard(cardName) {
-    const correctCards = getCorrectCards();
-    return !correctCards.includes(cardName);
+    return !getCorrectCardNames().includes(cardName);
 }
 
 function validateGame(number_of_cards, card_name) {
@@ -218,7 +299,7 @@ function confirmReset() {
 async function loadNextCard() {
     const correctCards = getCorrectCards();
     const params = new URLSearchParams();
-    correctCards.forEach((card) => params.append('exclude', card));
+    correctCards.forEach((card) => params.append('exclude', card.name));
 
     try {
         const response = await fetch('/api/next-card?' + params.toString(), {
